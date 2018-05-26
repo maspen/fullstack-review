@@ -44,7 +44,17 @@ console.log('github save got usernameArray:', JSON.stringify(usernameArray));
 			console.log('err saving repo:', err);
 			return;
 		}
-		console.log('repo saved successfully:', repo);
+		console.log('repo saved successfully: id : ownerLogin', repo.id, repo.ownerLogin);
+		/*
+	{ __v: 0,
+  id: 20243956,
+  name: 'jsconf2014',
+  ownerLogin: 'hackreactor',
+  ownerUrl: 'https://api.github.com/users/hackreactor',
+  description: 'Curriculum for the 2014 JSConf training track',
+  createdAt: '2014-05-28T03:28:58Z',
+  _id: 5b09ee6aabd73c84c459c5ab }
+		*/
 		return;
 	}
 
@@ -55,9 +65,11 @@ console.log('github save got usernameArray:', JSON.stringify(usernameArray));
 		    console.log('error from github', err);
 		    return err;
 		  }
-		  console.log('res to be saved to db', res.body);
+// console.log('-------------------------------------------------')		  
+// 		  console.log('res to be saved to db', JSON.parse(res.body));
+// console.log('-------------------------------------------------')		  
 		  // save the github data for this user
-
+		  saveToMongo(JSON.parse(res.body), saveCallBack);
 		});
 	});
 
@@ -79,17 +91,42 @@ console.log('github save got usernameArray:', JSON.stringify(usernameArray));
 */  
 }
 
-let saveToMongo = (githubData, callback) => {
+let saveToMongo = (githubDataArray, callback) => {
+	// Array.prototype.forEach.call(githubDataArray, repo => {
+	githubDataArray.forEach( repo => {
+// console.log('-------------------------------------------------');
+// console.log('repo', repo);
+// console.log('-------------------------------------------------');
+		var saveData = {
+			id: repo.id,
+			name: repo.name,
+			ownerLogin: repo.owner.login,
+			ownerUrl: repo.owner.url,
+			description: repo.description,
+			createdAt: repo.created_at
+		};
+		//console.log(JSON.stringify('data going into Repo', saveData));
+		var repo = new Repo(saveData);
+	  repo.save(callback)
+	  .then(err => {
+	  	callback(null, err);
+	  })
+	  .then(product => {
+	  	callback(product, null);
+	  });
+	});
 	// create the data
-	var saveData = { 
-		id: githubData.id,
-		name: githubData.name,
-		ownerLogin: githubData.owner.login,
-		ownerUrl: githubData.owner.url,
-		description: githubData.description,
-		createdAt: githubData.created_at
-	};
-	console.log(JSON.stringify('data going into Repo', saveData));
+	// var saveData = { 
+	// 	id: githubData.id,
+	// 	name: githubData.name,
+	// 	ownerLogin: githubData.owner.login,
+	// 	ownerUrl: githubData.owner.url,
+	// 	description: githubData.description,
+	// 	createdAt: githubData.created_at
+	// };
+	// console.log(JSON.stringify('data going into Repo', saveData));
+	// var repo = new Repo(saveData);
+ //  repo.save(callback);
 }
 
 let get = (callback) => {

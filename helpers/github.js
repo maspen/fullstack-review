@@ -38,6 +38,7 @@ let getReposByUsername = (username, callback) => {
     headers: {
       'User-Agent': 'request',
       'Authorization': `token ${config.TOKEN}`,
+      'Content-Type': 'application/json',
       'sort': 'updated',
       'direction': 'desc'
     }
