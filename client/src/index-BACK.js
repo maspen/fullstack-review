@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import Search from './components/Search.jsx';
 import RepoList from './components/RepoList.jsx';
+import axios from 'axios';
 
 class App extends React.Component {
   constructor(props) {
@@ -54,19 +55,27 @@ class App extends React.Component {
   }
 
   postGithubUser(username) {
-    var userName = username;
-    fetch('/repos', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        "Access-Control-Allow-Origin": "*"
-      },
-      body: JSON.stringify({
-        // username: '`${username}`'
-        githubuser: userName
-      })
-    })
+    // axios.post('/repos', {
+    //   username
+    // })
+    // var thisUsername = username;
+    // const bodyFormData = new FormData();
+    // bodyFormData.append(`'userName', '${username}'`);
+    // var key = "username";
+    // var value = username;
+    // axios({
+    //   method: 'post',
+    //   url: '/repos',
+    //   // data: bodyFormData,
+    //   data: {
+    //     key: value
+    //   },
+    //   config: { headers: {'content-type': 'application/json'}}
+    //   // data: {
+    //   //   username: thisUsername
+    //   // }
+    // })
+    axios.post('/repos', username)
     .then((response) => {
       console.log('github username submitted, respomse: ', response);
     })

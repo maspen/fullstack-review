@@ -10,7 +10,11 @@ app.post('/repos', function (req, res) {
   // and get the repo information from the github API, then
   // save the repo information in the database
   // getFromGithub
-  github.getReposByUsername(username, function(err, res){
+
+console.log('POST /repos req.data', req.data);
+
+  console.log('/repos post username:', req.body);
+  github.getReposByUsername(req.body, function(err, res){
   	if (err) {
   		console.log('error retrieving github data for ' + username);
   		res.write('error retrieving github data: ', error);
@@ -34,8 +38,17 @@ app.post('/repos', function (req, res) {
 
 app.get('/repos', function (req, res) {
   // This route should send back the top 25 repos
-  github.get(function(err, docs){
-  	
+  mongoose.get(function(err, docs) {
+    if (err) {
+      console.log('error retrieving github records from mongo:', err)
+      res.write('error: ', error);
+      res.status(500).send();
+      return;
+    }
+    console.log('got github records from mongo');
+    // console.log('docs:', JSON.stringify(docs));
+    res.write(JSON.stringify(docs));
+    res.status(200).send();
   });
 });
 
