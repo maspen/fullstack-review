@@ -48,9 +48,6 @@ class RepoList extends React.Component {
 		  			})
 		  		}
 		  		</div>
-		  		<div>
-		  			<span>After repo list</span>
-		  		</div>
 			  </div>
   		)
   	} else {
@@ -63,40 +60,5 @@ class RepoList extends React.Component {
   	}
   }
 }
-
-/*
-
-{
-		  			this.props.repos.map(function(repo){
-		  				return (
-		  					<RepoListItem repo={repo} />
-		  				)
-		  			})
-		  		}
-
-*/
-
-/*
-	    <div class="repos">
-	  		{
-	  			props.repos.map(function(repo){
-	  				return (
-	  					<RepoListItem repo={repo} />
-	  				)
-	  			})
-	  		}
-	  	</div>
-*/
-
-// const RepoList = (props) => {
-
-//   return (
-// 	  <div>
-// 	  	{ console.log('repose', props.repos) }
-// 	    <h4> Repo List Component </h4>
-// 	    There are {props.repos.length} repos.
-// 	  </div>
-//   )
-// }
 
 export default RepoList;

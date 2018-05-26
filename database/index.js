@@ -13,58 +13,46 @@ let repoSchema = new mongoose.Schema({
 });
 let Repo = mongoose.model('Repo', repoSchema);
 
-let save = (dataArray, callback) => {
-  // This function should save a repo or repos to
+let save = (usernameArray, callback) => {
+	// This function should save a repo or repos to
   // the MongoDB
-  dataArray.forEach(function(entry, index) {
-  	var data = { 
+
+	// TODO: don't really need 'callback' b.c creating on
+	//       here for 'save'
+
+  // check array: could be multiples
+  //      for each do a 'get' w/ callback
+  //				if callback OK do save
+
+	var githubResultArray = usernameArray.forEach((user) => {
+
+	});
+
+
+  Array.prototype.forEach.call(usernameArray, user => {
+	console.log('ENTRY:', entry);
+  	var saveData = { 
   		id: entry.id,
   		name: entry.name,
   		ownerLogin: entry.owner.login,
   		ownerUrl: entry.owner.url,
-  		description: entry.owner.description,
-  		createdAt: entry.owner.created_at
+  		description: entry.description,
+  		createdAt: entry.created_at
   	};
-  	console.log(JSON.stringify('data going into Repo', data));
-  	var repo = new Repo(data);
+  	console.log(JSON.stringify('data going into Repo', saveData));
+  	var repo = new Repo(saveData);
   	repo.save(callback);
   });
 }
 
-/*
-mongo shell:
-> mongo --shell
-
-> show dbs
-> admin     0.000GB
-checkout  0.000GB
-fetcher   0.000GB //
-local     0.000GB
-
-switch dbs
-> use fetcher
-
-// Find All Documents in a Collection
-> db.fetcher.find()
-
-// count collection
-> db.repos.count()
-> 98
-
-db.fetcher.find(<query>).count()
-*/
-
-let cb = function(err, repo) {
-	if(err) {
-		console.log('err saving repo:', err);
-		return;
-	}
-	console.log('repo saved successfully:', repo);
+let saveCallBack = function(err, repo) {
+if(err) {
+	console.log('err saving repo:', err);
 	return;
 }
-
-// test to populate the mongo db w/ called data
-// save(cannedDate, cb);
+console.log('repo saved successfully:', repo);
+return;
+}
 
 let get = (callback) => {
 	// query.find({ name: 'Los Pollos Hermanos' }).find(callback)
@@ -91,6 +79,41 @@ let cbGet = function(err, repo) {
 
 // test retrieve docs rom the mongo db
 //get(cbGet);
+
+/** KEEP
+mongo shell:
+> mongo --shell
+
+> show dbs
+> admin     0.000GB
+checkout  0.000GB
+fetcher   0.000GB //
+local     0.000GB
+
+switch dbs
+> use fetcher
+
+// Find All Documents in a Collection
+> db.fetcher.find()
+
+// count collection
+> db.repos.count()
+> 98
+
+db.fetcher.find(<query>).count()
+*/
+
+// let cb = function(err, repo) {
+// 	if(err) {
+// 		console.log('err saving repo:', err);
+// 		return;
+// 	}
+// 	console.log('repo saved successfully:', repo);
+// 	return;
+// }
+
+// test to populate the mongo db w/ called data
+// save(cannedDate, cb);
 
 module.exports.save = save;
 module.exports.get = get;

@@ -58,15 +58,11 @@ class App extends React.Component {
     var userName = username;
     fetch('/repos', {
       method: 'POST',
+      body: JSON.stringify({githubuser: userName}),
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        "Access-Control-Allow-Origin": "*"
-      },
-      body: JSON.stringify({
-        // username: '`${username}`'
-        githubuser: userName
-      })
+        'Content-Type': 'application/json'
+      }
     })
     .then((response) => {
       console.log('github username submitted, respomse: ', response);

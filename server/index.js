@@ -2,17 +2,14 @@ const express = require('express');
 let app = express();
 const github = require('../helpers/github.js');
 const mongoose = require('../database/index.js');
+const bodyParser = require('body-parser');
 
 app.use(express.static(__dirname + '/../client/dist'));
 
+app.use(bodyParser.json());
+// body-parser: req.body
+
 app.post('/repos', function (req, res) {
-  // This route should take the github username provided
-  // and get the repo information from the github API, then
-  // save the repo information in the database
-  // getFromGithub
-
-console.log('POST /repos req.data', req.data);
-
   console.log('/repos post username:', req.body);
   github.getReposByUsername(req.body, function(err, res){
   	if (err) {
@@ -21,15 +18,25 @@ console.log('POST /repos req.data', req.data);
 			res.status(500).send();
   		return;
   	}
-  	console.log('got github repo data from github for ' + username);
-  	mongoose.save(res.body, function(err) {
+    // req.body:
+    // 1 { githubuser: 'matt' }
+    // 3 { githubuser: 'joe bill mark' }
+    // need to create of user/s from the response
+    var usersString = req.body.githubuser;
+    // could be 1 or many
+    // string.split(' ') to create array
+    // 1 ["matt"]
+    // 3 ["joe", "bill", "mark"]
+    var userArray = usersString.split(' ');
+  	console.log('getting github repo/s from github for ', JSON.string(userArray));
+  	mongoose.save(userArray, function(err) {
   		if (err) {
-  			console.log('error saving repo for ' + username + ' :', err)
+  			console.log('error saving repo for ' + JSON.string(userArray) + ' :', err)
   			res.write('error: ', error);
 				res.status(500).send();
   			return;
   		}
-  		console.log('github repos saved for user ', username);
+  		console.log('github repos saved for user/s ', JSON.string(userArray));
   		res.write('success');
 			res.status(200).send();
   	})
