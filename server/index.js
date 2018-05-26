@@ -28,7 +28,7 @@ app.post('/repos', function (req, res) {
     // 1 ["matt"]
     // 3 ["joe", "bill", "mark"]
     var userArray = usersString.split(' ');
-  	console.log('getting github repo/s from github for ', JSON.string(userArray));
+  	console.log('getting github repo/s from github for ', JSON.stringify(userArray));
   	mongoose.save(userArray, function(err) {
   		if (err) {
   			console.log('error saving repo for ' + JSON.string(userArray) + ' :', err)
@@ -45,6 +45,7 @@ app.post('/repos', function (req, res) {
 
 app.get('/repos', function (req, res) {
   // This route should send back the top 25 repos
+console.log('app got POST for get ... ');  
   mongoose.get(function(err, docs) {
     if (err) {
       console.log('error retrieving github records from mongo:', err)

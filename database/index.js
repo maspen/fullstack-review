@@ -3,6 +3,10 @@ mongoose.connect('mongodb://localhost/fetcher', {useMongoClient: true});
 
 const cannedDate = require('../data.json');
 
+const githubGetForUser = require('../helpers/github.js');
+
+mongoose.Promise = Promise;
+
 let repoSchema = new mongoose.Schema({
   id: Number,
   name: String,
@@ -16,7 +20,7 @@ let Repo = mongoose.model('Repo', repoSchema);
 let save = (usernameArray, callback) => {
 	// This function should save a repo or repos to
   // the MongoDB
-
+console.log('github save got usernameArray:', JSON.stringify(usernameArray));
 	// TODO: don't really need 'callback' b.c creating on
 	//       here for 'save'
 
@@ -24,11 +28,40 @@ let save = (usernameArray, callback) => {
   //      for each do a 'get' w/ callback
   //				if callback OK do save
 
-	var githubResultArray = usernameArray.forEach((user) => {
+  // its an http request
+  let getFromGithubCallback = (err, res) => {
+	  if (err) {
+	    console.log('error from githube ', err);
+	    return err;
+	  }
+  	console.log('res to be saved to db', res.body);
+  	return;
+	};
 
+	// mongo uses callbacks (Promises)
+	let saveCallBack = function(err, repo) {
+		if(err) {
+			console.log('err saving repo:', err);
+			return;
+		}
+		console.log('repo saved successfully:', repo);
+		return;
+	}
+
+	usernameArray.forEach((userName) => {
+// console.log('getting github repose for', userName);
+		githubGetForUser.getReposByUsername(userName, (err, res) => {
+		  if (err) {
+		    console.log('error from github', err);
+		    return err;
+		  }
+		  console.log('res to be saved to db', res.body);
+		  // save the github data for this user
+
+		});
 	});
 
-
+/*
   Array.prototype.forEach.call(usernameArray, user => {
 	console.log('ENTRY:', entry);
   	var saveData = { 
@@ -43,30 +76,66 @@ let save = (usernameArray, callback) => {
   	var repo = new Repo(saveData);
   	repo.save(callback);
   });
+*/  
 }
 
-let saveCallBack = function(err, repo) {
-if(err) {
-	console.log('err saving repo:', err);
-	return;
-}
-console.log('repo saved successfully:', repo);
-return;
+let saveToMongo = (githubData, callback) => {
+	// create the data
+	var saveData = { 
+		id: githubData.id,
+		name: githubData.name,
+		ownerLogin: githubData.owner.login,
+		ownerUrl: githubData.owner.url,
+		description: githubData.description,
+		createdAt: githubData.created_at
+	};
+	console.log(JSON.stringify('data going into Repo', saveData));
 }
 
 let get = (callback) => {
+	//** when page loads '{}' is sent
 	// query.find({ name: 'Los Pollos Hermanos' }).find(callback)
 	// Repo.find().limit(25).sort({ age: -1 }).exec(callback).
-	Repo.find({}, null, { limit: 25 }, function (err, docs) {
-		if(err) {
-			console.log('got error retrieving repos:', err);
-			callback(err, null);
-			return;
-		}
-		console.log('got repos');
-		callback(null, docs)
+	// '{}' means all
+	// test
+	// var testCallback = (err, docs) => {
+	// 	if (err) {
+	// 		console.log('mongo save error', err);
+	// 	}
+	// 	console.log('mongo docs', docs)
+	// }
+
+//	Repo.find({}, null, { limit: 25 }, callback);
+
+	Repo.find({}, null, { limit: 25 })
+	// .exec(callback);
+	.catch(err => {
+console.log('mongo find got err', err);		
+		callback(err, null);
+	})
+	.then(docs => {
+// console.log('mongo find got docs', docs);		
+		callback(null, docs);
 	});
-}
+};
+
+// 	Repo.find({}, null, { limit: 25 }, function (err, docs) {
+// 		if(err) {
+// 			console.log('got error retrieving repos:', err);
+// 			callback(err, null);
+// 			return;
+// 		}
+// 		console.log('got repos');
+// 		callback(null, docs)
+// 	});
+// };
+// let get = (callback) => {
+// 	//** when page loads '{}' is sent
+// 	// query.find({ name: 'Los Pollos Hermanos' }).find(callback)
+// 	// Repo.find().limit(25).sort({ age: -1 }).exec(callback).
+// 	// '{}' means all
+// 	Repo.find({}, null, { limit: 25 }, callback);
+// };
 
 let cbGet = function(err, repo) {
 	if(err) {
