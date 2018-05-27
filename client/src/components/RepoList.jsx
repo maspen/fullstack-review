@@ -26,6 +26,13 @@ class RepoList extends React.Component {
 		  				return <RepoListItem repo={repo} />
 
 		  				Array.prototype.forEach.call(this.props.repos, repo => {
+
+											<div key={repo.id} />
+											<span>owner: {repo.ownerLogin}</span>
+											<span>repo: {repo.name}</span>
+											<span>description: {repo.description}</span>
+											<span>owner URL: {repo.ownerUrl}</span>
+											<span>created at: {repo.createdAt}</span>
 */		  				  
 
   render() {
@@ -39,11 +46,9 @@ class RepoList extends React.Component {
 		  				return (
 		  							<div>
 											<div key={repo.id} />
-											<span>owner: {repo.ownerLogin}</span>
-											<span>repo: {repo.name}</span>
+											<span>owner: {repo.ownerLogin}{'\u00A0'}</span>
+											<span>repo: <a href={repo.ownerUrl} target="_blank">{repo.name}</a>{'\u00A0'}</span>
 											<span>description: {repo.description}</span>
-											<span>owner URL: {repo.ownerUrl}</span>
-											<span>created at: {repo.createdAt}</span>
 										</div>)
 		  			})
 		  		}

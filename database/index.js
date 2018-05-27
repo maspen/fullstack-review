@@ -101,7 +101,7 @@ let saveToMongo = (githubDataArray, callback) => {
 			id: repo.id,
 			name: repo.name,
 			ownerLogin: repo.owner.login,
-			ownerUrl: repo.owner.url,
+			ownerUrl: repo.html_url,
 			description: repo.description,
 			createdAt: repo.created_at
 		};
@@ -199,12 +199,36 @@ local     0.000GB
 switch dbs
 > use fetcher
 
+> show collections
+>> repos
+
 // Find All Documents in a Collection
 > db.fetcher.find()
 
 // count collection
 > db.repos.count()
 > 98
+
+// Removes documents from a collection
+// Will only remove all the data in the collection but leave any indexes intact. 
+// If new documents are added to the collection they will populate the existing indexes.
+db.fetcher.remove({}) -- doesn't work
+db.getCollection("fetcher").remove({})
+
+// collection help
+db.fetcher.help()
+
+// drop the collection
+db.getCollection("fetcher").drop(); -- doesn't work
+
+// Will drop the collection and all indexes. 
+// If the collection is recreated then the indexes will also need to be re-created.
+db.fetcher.dropt()// not working
+db.repos.drop()
+> true
+db.repos.count()
+> 0
+
 
 db.fetcher.find(<query>).count()
 */
