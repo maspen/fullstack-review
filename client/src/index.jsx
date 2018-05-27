@@ -13,6 +13,7 @@ class App extends React.Component {
       repos: [],
       error: ''
     }
+    this.fetchFromGithug = this.fetchFromGithug.bind(this);
     this.search = this.search.bind(this);
     this.postGithubUser = this.postGithubUser.bind(this);
   }
@@ -22,6 +23,10 @@ class App extends React.Component {
   use setState to update your component when the data is 
   retrieved. */
   componentDidMount() {
+    this.fetchFromGithug();
+  }
+
+  fetchFromGithug() {
     fetch("/repos")
       .then((res) => {
         return res.json();
@@ -43,6 +48,9 @@ class App extends React.Component {
     ).then(() => {
       console.log('client/index/render componentDidMount', this.state);
     })
+    .catch((error) => {
+      console.log('got error fetching github list:', error);
+    });
   }
 
   search (username) {
@@ -79,7 +87,7 @@ class App extends React.Component {
         <div>
           <h1>Github Fetcher</h1>
           <RepoList repos={0}/>
-          <Search onSearch={this.search}/>
+          <Search onSearch={this.search} callFetch={this.fetchFromGithug} />
         </div>
       )
     } else if (!isLoaded) {
@@ -95,7 +103,7 @@ class App extends React.Component {
         <div>
           <h1>Github Fetcher</h1>
           <RepoList repos={this.state.repos}/>
-          <Search onSearch={this.search} />
+          <Search onSearch={this.search} callFetch={this.fetchFromGithug} />
         </div>
       )
     }

@@ -69,30 +69,13 @@ console.log('github save got usernameArray:', JSON.stringify(usernameArray));
 // 		  console.log('res to be saved to db', JSON.parse(res.body));
 // console.log('-------------------------------------------------')		  
 		  // save the github data for this user
+		  console.log('saving github for ', JSON.parse(res.body)[0].owner.login);
 		  saveToMongo(JSON.parse(res.body), saveCallBack);
 		});
-	});
-
-/*
-  Array.prototype.forEach.call(usernameArray, user => {
-	console.log('ENTRY:', entry);
-  	var saveData = { 
-  		id: entry.id,
-  		name: entry.name,
-  		ownerLogin: entry.owner.login,
-  		ownerUrl: entry.owner.url,
-  		description: entry.description,
-  		createdAt: entry.created_at
-  	};
-  	console.log(JSON.stringify('data going into Repo', saveData));
-  	var repo = new Repo(saveData);
-  	repo.save(callback);
-  });
-*/  
+	}); 
 }
 
 let saveToMongo = (githubDataArray, callback) => {
-	// Array.prototype.forEach.call(githubDataArray, repo => {
 	githubDataArray.forEach( repo => {
 // console.log('-------------------------------------------------');
 // console.log('repo', repo);

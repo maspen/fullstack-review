@@ -23,16 +23,16 @@ class RepoList extends React.Component {
 
 /*
 
-		  				return <RepoListItem repo={repo} />
+return <RepoListItem repo={repo} />
 
-		  				Array.prototype.forEach.call(this.props.repos, repo => {
+Array.prototype.forEach.call(this.props.repos, repo => {
 
-											<div key={repo.id} />
-											<span>owner: {repo.ownerLogin}</span>
-											<span>repo: {repo.name}</span>
-											<span>description: {repo.description}</span>
-											<span>owner URL: {repo.ownerUrl}</span>
-											<span>created at: {repo.createdAt}</span>
+				<div key={repo.id} />
+				<span>owner: {repo.ownerLogin}</span>
+				<span>repo: {repo.name}</span>
+				<span>description: {repo.description}</span>
+				<span>owner URL: {repo.ownerUrl}</span>
+				<span>created at: {repo.createdAt}</span>
 */		  				  
 
   render() {
@@ -40,7 +40,7 @@ class RepoList extends React.Component {
   		return (
 			  <div>
 			    <h4> Repo List Component </h4>
-			    There are {this.props.repos.length} repos.
+			    <p>There are {this.props.repos.length} repos.</p>
 			  	<div>{
 		  			Array.prototype.map.call(this.props.repos, repo => {
 		  				return (

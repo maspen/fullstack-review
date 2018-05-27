@@ -7,6 +7,7 @@ class Search extends React.Component {
       term: ''
     }
 
+    this.callFetch = this.callFetch.bind(this);
     this.onChange = this.onChange.bind(this);
     this.search = this.search.bind(this);
   }
@@ -22,6 +23,10 @@ class Search extends React.Component {
     this.props.onSearch(this.state.term);
   }
 
+  callFetch() {
+    this.props.fetch();
+  }
+ 
   render() {
     return (
       <div>
